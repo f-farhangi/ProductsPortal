@@ -9,6 +9,7 @@ namespace Api.DataAccess
         ICategoryRepository CategoryRepository { get; }
         IProductRepository ProductRepository { get; }
         IProductDetailRepository ProductDetailRepository { get; }
+        IProductPriceRepository ProductPriceRepository { get; }
 
         #endregion
 
@@ -17,6 +18,7 @@ namespace Api.DataAccess
         void Commit();
         Task CommitAsync();
         void Rollback();
+        Task RollbackAsync();
 
         #endregion
     }

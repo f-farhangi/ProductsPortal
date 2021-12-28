@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Api.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Api.Entities
+namespace Api.DataAccess
 {
     public class ProductDetailConfiguration : IEntityTypeConfiguration<ProductDetail>
     {

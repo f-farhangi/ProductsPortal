@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace Api.DataAccess
@@ -11,19 +8,19 @@ namespace Api.DataAccess
         #region Fields
 
         private readonly AppDbContext _dbContext;
-        private readonly Lazy<ICategoryRepository> _CategoryRepository;
-        private readonly Lazy<IProductRepository> _ProductRepository;
-        private readonly Lazy<IProductDetailRepository> _ProductDetailRepository;
+        private readonly Lazy<ICategoryRepository> _categoryRepository;
+        private readonly Lazy<IProductRepository> _productRepository;
+        private readonly Lazy<IProductDetailRepository> _productDetailRepository;
+        private readonly Lazy<IProductPriceRepository> _productPriceRepository;
 
         #endregion
 
         #region Property
 
-        public ICategoryRepository CategoryRepository => _CategoryRepository.Value;
-
-        public IProductRepository ProductRepository => _ProductRepository.Value;
-
-        public IProductDetailRepository ProductDetailRepository => _ProductDetailRepository.Value;
+        public ICategoryRepository CategoryRepository => _categoryRepository.Value;
+        public IProductRepository ProductRepository => _productRepository.Value;
+        public IProductDetailRepository ProductDetailRepository => _productDetailRepository.Value;
+        public IProductPriceRepository ProductPriceRepository => _productPriceRepository.Value;
 
         #endregion
 
@@ -32,9 +29,10 @@ namespace Api.DataAccess
         public UnitOfWork(AppDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _CategoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(_dbContext));
-            _ProductRepository = new Lazy<IProductRepository>(() => new ProductRepository(_dbContext));
-            _ProductDetailRepository = new Lazy<IProductDetailRepository>(() => new ProductDetailRepository(_dbContext));
+            _categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(_dbContext));
+            _productRepository = new Lazy<IProductRepository>(() => new ProductRepository(_dbContext));
+            _productDetailRepository = new Lazy<IProductDetailRepository>(() => new ProductDetailRepository(_dbContext));
+            _productPriceRepository = new Lazy<IProductPriceRepository>(() => new ProductPriceRepository(_dbContext));
         }
 
         #endregion
@@ -43,17 +41,22 @@ namespace Api.DataAccess
 
         public void Commit()
         {
-            throw new NotImplementedException();
+            _dbContext.SaveChanges();
         }
 
-        public Task CommitAsync()
+        public async Task CommitAsync()
         {
-            throw new NotImplementedException();
+            await _dbContext.SaveChangesAsync();
         }
 
         public void Rollback()
         {
-            throw new NotImplementedException();
+            _dbContext.Dispose();
+        }
+
+        public async Task RollbackAsync()
+        {
+            await _dbContext.DisposeAsync();
         }
 
         #endregion
