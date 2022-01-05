@@ -1,18 +1,13 @@
+using Api.ApplicationServices;
 using Api.DataAccess;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Converters;
 
 namespace Api
 {
@@ -28,10 +23,16 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
+            services.AddControllers().AddNewtonsoftJson(jsonOptions =>
+            {
+                jsonOptions.SerializerSettings.Converters.Add(new StringEnumConverter());
+            });
 
-            services.AddControllers();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer("name=ConnectionStrings:DefaultConnection"));
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IProductService, ProductService>();
 
             services.AddSwaggerGen(c =>
             {

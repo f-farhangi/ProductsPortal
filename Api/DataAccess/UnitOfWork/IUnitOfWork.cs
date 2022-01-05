@@ -4,7 +4,7 @@ namespace Api.DataAccess
 {
     public interface IUnitOfWork
     {
-        #region Property
+        #region Properties
 
         ICategoryRepository CategoryRepository { get; }
         IProductRepository ProductRepository { get; }

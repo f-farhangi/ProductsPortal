@@ -1,5 +1,7 @@
 ﻿using Api.Entities;
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Api.DataAccess
@@ -8,11 +10,11 @@ namespace Api.DataAccess
     {
         #region Methods
 
-        Task<IEnumerable<T>> GetAll();
-        Task<T> Get(int id);
-        Task Add(T entity);
+        Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null, List<string> includes = default, bool noTracking = false);
+        Task<T> GetAsync(Expression<Func<T, bool>> predicate = null, List<string> includes = default, bool noTracking = false);
+        Task Insert(T entity);
         void Update(T entity);
-        Task Delete(int id);
+        Task Delete(long id);
 
         #endregion
     }

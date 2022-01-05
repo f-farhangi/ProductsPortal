@@ -46,6 +46,10 @@ namespace Api.DataAccess.Migrations
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(50)

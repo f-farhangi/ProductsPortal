@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Api.DataAccess
@@ -26,14 +28,9 @@ namespace Api.DataAccess
 
         #region Methods
 
-        public async Task Add(TEntity entity)
+        public async Task Delete(long id)
         {
-            await _dbContext.Set<TEntity>().AddAsync(entity);
-        }
-
-        public async Task Delete(int id)
-        {
-            var entity = await Get(id);
+            var entity = await GetAsync(p => p.Id == id);
 
             if (entity != null)
             {
@@ -41,19 +38,52 @@ namespace Api.DataAccess
             }
         }
 
-        public async Task<TEntity> Get(int id)
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null, List<string> includes = null, bool noTracking = false)
         {
-            return await _dbContext.Set<TEntity>().SingleAsync(x => x.Id == id);
+            IQueryable<TEntity> query;
+
+            if (noTracking)
+                query = _dbContext.Set<TEntity>().AsNoTracking();
+            else
+                query = _dbContext.Set<TEntity>();
+
+            foreach (var include in includes ?? new List<string>())
+                query = query.Include(include);
+
+            if (predicate == null)
+                return await query.ToListAsync();
+
+            return await query.Where(predicate).ToListAsync();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate = null, List<string> includes = null, bool noTracking = false)
         {
-            return await _dbContext.Set<TEntity>().ToListAsync();
+            IQueryable<TEntity> query;
+
+            if (noTracking)
+                query = _dbContext.Set<TEntity>().AsNoTracking();
+            else
+                query = _dbContext.Set<TEntity>();
+
+            foreach (var include in includes ?? new List<string>())
+            {
+                query = query.Include(include);
+            }
+
+            if (predicate == null)
+                return await query.SingleAsync();
+
+            return await query.Where(predicate).SingleAsync();
+        }
+
+        public async Task Insert(TEntity entity)
+        {
+            await _dbContext.Set<TEntity>().AddAsync(entity);
         }
 
         public void Update(TEntity entity)
         {
-             _dbContext.Set<TEntity>().Update(entity);
+            _dbContext.Set<TEntity>().Update(entity);
         }
 
         #endregion

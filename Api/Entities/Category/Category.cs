@@ -4,7 +4,7 @@ namespace Api.Entities
 {
     public class Category : IEntity
     {
-        #region Property
+        #region Properties
 
         public long Id { get; set; }
         public string Title { get; set; }

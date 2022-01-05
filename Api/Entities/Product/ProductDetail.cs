@@ -2,7 +2,7 @@
 {
     public class ProductDetail : IEntity
     {
-        #region Property
+        #region Properties
 
         public long Id { get; set; }
 

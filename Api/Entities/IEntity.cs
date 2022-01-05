@@ -2,7 +2,7 @@
 {
     public interface IEntity
     {
-        #region Property
+        #region Properties
 
         public long Id { get; set; }
 

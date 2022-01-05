@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211228075124_Add_Product_Price")]
-    partial class Add_Product_Price
+    [Migration("20220105081607_Add-Description-Field")]
+    partial class AddDescriptionField
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,6 +47,10 @@ namespace Api.DataAccess.Migrations
 
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Title")
                         .IsRequired()

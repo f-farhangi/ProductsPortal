@@ -15,7 +15,7 @@ namespace Api.DataAccess
 
         #endregion
 
-        #region Property
+        #region Properties
 
         public ICategoryRepository CategoryRepository => _categoryRepository.Value;
         public IProductRepository ProductRepository => _productRepository.Value;
