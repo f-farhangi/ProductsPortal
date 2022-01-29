@@ -3,8 +3,11 @@ using Api.Entities;
 using Api.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Api.Controllers
@@ -36,7 +39,7 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts()
         {
-            var entity= await _service.GetProducts();
+            var entity = await _service.GetProducts();
             var dto = _mapper.Map<IEnumerable<ProductDto>>(entity);
             return Ok(dto);
         }
@@ -69,6 +72,23 @@ namespace Api.Controllers
             };
 
             await _service.InsertProduct(product);
+
+            using (var client = new HttpClient())
+            {
+                var searchData = new 
+                { 
+                    ProductId = product.Id, 
+                    Title = product.Title, 
+                    Description = product.Description
+                };
+
+                StringContent content = new(JsonConvert.SerializeObject(searchData), Encoding.UTF8, "application/json");
+
+                using var response = await client.PostAsync("https://localhost:5003/api/SearchData", content);
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                //receivedReservation = JsonConvert.DeserializeObject<Reservation>(apiResponse);
+            }
+
             return Ok();
         }
 
